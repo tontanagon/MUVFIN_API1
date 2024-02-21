@@ -31,7 +31,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/home/{page}', [FilmController::class, 'index'])->name('home');
+    Route::get('/home/{page?}', [FilmController::class, 'index'])->name('home');
 
     Route::get('/cart', function () {
         return Inertia::render('Cart');
