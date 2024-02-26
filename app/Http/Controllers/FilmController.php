@@ -15,18 +15,36 @@ class FilmController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request , $page =1)
     {
-        $films = DB::table('films')
-        ->leftJoin('film_texts','films.film_id','=','film_texts.film_id')
-        ->leftJoin('categories','films.category_id','=','categories.category_id')
-        ->get();
-
         $cate = category::all();
+        $countfilm = film::count();
+
+
+        if(is_numeric($page) && $page >= 1) {
+            $last =  8 * $page;
+            $first = $last - 7;
+
+            $films = DB::table('films')
+                ->leftJoin('film_texts','films.film_id','=','film_texts.film_id')
+                ->leftJoin('categories','films.category_id','=','categories.category_id')
+                ->select('films.*', 'film_texts.*', 'categories.*')
+                ->whereBetween('films.film_id', [$first, $last])
+                ->get();
+        } else{
+            $films = DB::table('films')
+                ->leftJoin('film_texts','films.film_id','=','film_texts.film_id')
+                ->leftJoin('categories','films.category_id','=','categories.category_id')
+                ->select('films.*', 'film_texts.*', 'categories.*')
+                ->where('categories.name','=',$page)
+                ->get();
+        }
 
         return Inertia::render('Home',[
             'films' => $films,
             'cate' => $cate,
+            'countfilm' => $countfilm,
+            'prenext' => $page,
         ]);
     }
 

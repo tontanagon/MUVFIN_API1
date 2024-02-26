@@ -1,129 +1,81 @@
+import { find } from 'lodash'
 import { defineStore } from 'pinia'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
-export const useShoppingStore = defineStore('shopping', {
-    state: () => {
-        return {
-            cartItems: [],
-            order_history: [],
-            total: []
+import { computed, ref } from 'vue'
+
+export const useShoppingStore = defineStore('shopping', () => {
+    const cartItems1 = ref([
+        { title: 'Hello', quantity: 1, price: 29, length: '102', cat: 'Action', imgUrl: 'https://i.kym-cdn.com/entries/icons/original/000/046/895/huh_cat.jpg' },
+        { title: 'Hello World', quantity: 1, price: 29, length: '999', cat: 'Simulator', imgUrl: 'https://i.pinimg.com/736x/b9/c4/7e/b9c47ef70bff06613d397abfce02c6e7.jpg' },
+        { title: 'Hello EiEi', quantity: 1, price: 29, length: '3203', cat: 'Learning', imgUrl: 'https://www.shutterstock.com/image-photo/portrait-beige-cat-shocked-expression-600nw-2319422905.jpg' }
+    ]);
+
+    const  cartItems = ref([]);
+
+    const increaseQuantity = (item) => {
+        item.quantity++;
+    };
+
+    const decreaseQuantity = (item) => {
+        if (item.quantity > 1) {
+            item.quantity--;
         }
-    },
-    getters: {
-        countCartItems() {
-            return this.cartItems.length;
-        },
-        getCartItems() {
-            return this.cartItems;
-        }
-    },
-    actions: {
-        addToCart(item, paramiter) {
-            let index = this.cartItems.findIndex(product => product.id === item.id);
-            console.log(paramiter)
-            const erorr = () => {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'กรุณาเข้าสู่ระบบก่อนทำรายการ',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }
-            const success = () => {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'เพิ่มหนังลงตะกร้าเรียบร้อยเเล้ว',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }
-            if (paramiter) {
-                if (index !== -1) {
-                    this.cartItems[index].quantity += 1;
-                    success()
-                } else {
-                    item.quantity = 1;
-                    this.cartItems.push(item);
-                    success()
-                }
-            } else {
-                erorr()
-            }
-        },
-        incrementQ(item) {
-            let index = this.cartItems.findIndex(product => product.id === item.id);
-            if (index !== -1) {
-                this.cartItems[index].quantity += 1;
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'เพิ่มจำนวนหนังเรียบร้อย',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        },
-        decrementQ(item) {
-            let index = this.cartItems.findIndex(product => product.id === item.id);
-            if (index !== -1) {
-                this.cartItems[index].quantity -= 1;
-                if (this.cartItems[index].quantity === 0) {
-                    this.cartItems = this.cartItems.filter(product => product.id !== item.id);
-                }
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'ลดจำนวนหนังเรียบร้อย',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        },
-        removeFromCart(item) {
-            this.cartItems = this.cartItems.filter(product => product.id !== item.id);
+    };
+
+    const removeItem = (index) => {
+        cartItems.value.splice(index, 1);
+    };
+
+    const totalPrice = computed(() => {
+        return cartItems.value.reduce((total, item) => {
+            return total + (item.price * item.quantity);
+        }, 0);
+    });
+
+    const totalQuantity = computed(() => {
+        return cartItems.value.reduce((total, item) => {
+            return total + item.quantity;
+        }, 0);
+    });
+
+
+    const addToCart = (quantity, title, category, price, imgUrl, length) => {
+        //หา index ของ titlle ใน cartItems ถ้าไม่เจอ = -1
+        const finditem = cartItems.value.findIndex(film => film.title === title);
+
+        const success = (hum) => {
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'ลบหนังออกจากตะกร้าเรียบร้อย',
+                title: hum,
                 showConfirmButton: false,
                 timer: 1500
+            })
+        }
+
+        console.log(finditem);
+        if(finditem === -1){
+            cartItems.value.push({
+                quantity: quantity,
+                title: title,
+                category: category,
+                price: price,
+                imgUrl: imgUrl,
+                length: length
             });
-        },
-        addTohistory(item, totalnodis, dis, totaldis) {
-            const i = [totalnodis, dis, totaldis];
-            if (totalnodis > 0) {
-                this.order_history.push(item);
-                const checkedItems = this.cartItems.filter(product => product.checked);
-                if (checkedItems.length > 0) {
-                    this.cartItems = this.cartItems.filter(product => !product.checked);
-                    this.total.push(i);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'ทำรายการเสร็จสิ้น',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'กรุณาเลือกสินค้าที่ต้องการชำระเงิน',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            } else {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'กรุณาเพิ่มรายการ',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        },
-    },
+            success("เพิ่มหนังลงตะกร้าเรียบร้อยเเล้ว")
+        }else{
+            cartItems.value[finditem].quantity += 1;
+            success("เพิ่มระยะเวลาเรียบร้อยเเล้ว")
+        }
+
+
+        console.log(cartItems.value);
+    }
+
+    return {addToCart, increaseQuantity, decreaseQuantity, removeItem, cartItems, cartItems1, totalPrice , totalQuantity};
 })
+
+
+

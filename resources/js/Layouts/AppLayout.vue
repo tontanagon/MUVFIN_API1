@@ -41,14 +41,14 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('home')">
+                                <Link :href="route('home', { page: 1 })">
                                     <ApplicationMark class="block h-50 w-50" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('home')" :active="route().current('home')">
+                                <NavLink :href="route('home', { page: 1 })" :active="route().current('home', { page: 1 })">
                                     Home
                                 </NavLink>
                                 <NavLink :href="route('cart')" :active="route().current('cart')">
