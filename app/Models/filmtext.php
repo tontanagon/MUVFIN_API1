@@ -10,6 +10,13 @@ class filmtext extends Model
 
     use HasFactory;
 
+    protected $primaryKey = 'film_id';
+
+    protected $fillable = [
+        'film_id',
+        'description',
+    ];
+
 
     public function film_text_to_film()
     {

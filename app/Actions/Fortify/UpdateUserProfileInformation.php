@@ -2,7 +2,9 @@
 
 namespace App\Actions\Fortify;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\customer;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -15,6 +17,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      *
      * @param  array<string, string>  $input
      */
+
+
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
@@ -36,6 +40,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'email' => $input['email'],
             ])->save();
         }
+
+
     }
 
     /**

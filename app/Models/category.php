@@ -9,6 +9,15 @@ class category extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'category_id';
+
+    protected $fillable = [
+        'category_id',
+        'name',
+
+    ];
+
+
     public function category_to_film()
     {
         return $this->hasMany(film::class);

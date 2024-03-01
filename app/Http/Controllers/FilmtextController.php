@@ -14,7 +14,11 @@ class FilmtextController extends Controller
      */
     public function index()
     {
-        //
+        $filmtext = filmtext::all();
+
+        return response()->json([
+            'Data' => $filmtext
+        ], 200);
     }
 
     /**
@@ -35,18 +39,35 @@ class FilmtextController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $validated = $request->validate([
+            'film_id' => 'required|integer',
+            'description' => 'required|string|max:10000',
+        ]);
 
+        filmtext::create($validated);
+
+        return response()->json(['message' => 'fi created successfully'], 201);
+    }
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\filmtext  $filmtext
      * @return \Illuminate\Http\Response
      */
-    public function show(filmtext $filmtext)
+    public function show(Request $request,filmtext $filmtext)
     {
-        //
+        $filmtext = filmtext::find($request->filmtext);
+
+        if(!$filmtext){
+            return response()->json([
+                'message' => 'filmtext not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'filmtext get successfully',
+            'Data' => $filmtext
+        ], 201);
     }
 
     /**
@@ -69,7 +90,19 @@ class FilmtextController extends Controller
      */
     public function update(Request $request, filmtext $filmtext)
     {
-        //
+        $validated = $request->validate([
+            'film_id' => 'required|integer',
+            'description' => 'required|string|max:10000',
+        ]);
+
+        if (!$filmtext) {
+            return response()->json(['message' => 'filmtext not found'], 404);
+        }
+            $filmtext->update($validated);
+
+            return response()->json(['message' => 'filmtext update successfully', 'data' => $filmtext], 200);
+
+
     }
 
     /**
@@ -78,8 +111,17 @@ class FilmtextController extends Controller
      * @param  \App\Models\filmtext  $filmtext
      * @return \Illuminate\Http\Response
      */
-    public function destroy(filmtext $filmtext)
+    public function destroy($filmtext)
     {
-        //
+        $filmtext = filmtext::find($filmtext);
+        if ($filmtext) {
+        $filmtext->delete();
+        return response()->json(['message' => 'filmtext deleted successfully',
+    'data' =>$filmtext], 200);
+        } else{
+            return response()->json(['message' => 'filmtext not found'], 404);
+        }
+
     }
 }
+

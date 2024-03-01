@@ -10,7 +10,10 @@ import TextInput from '@/Components/TextInput.vue';
 
 const form = useForm({
     name: '',
+    first_name:'',
+    last_name:'',
     email: '',
+    phone:'',
     password: '',
     password_confirmation: '',
     terms: false,
@@ -33,7 +36,7 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="NameAccount" />
                 <TextInput
                     id="name"
                     v-model="form.name"
@@ -45,7 +48,28 @@ const submit = () => {
                 />
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
-
+            <div class="mt-4">
+                <InputLabel for="fname" value="FristName" />
+                <TextInput
+                    id="fname"
+                    v-model="form.first_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    required
+                />
+                <InputError class="mt-2" :message="form.errors.first_name" />
+            </div>
+            <div class="mt-4">
+                <InputLabel for="lname" value="Lastname" />
+                <TextInput
+                    id="lname"
+                    v-model="form.last_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    required
+                />
+                <InputError class="mt-2" :message="form.errors.last_name" />
+            </div>
             <div class="mt-4">
                 <InputLabel for="email" value="Email" />
                 <TextInput
@@ -57,6 +81,19 @@ const submit = () => {
                     autocomplete="username"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+            <div class="mt-4">
+                <InputLabel for="phone" value="Phone" />
+                <TextInput
+                    id="phone"
+                    v-model="form.phone"
+                    type="tel"
+                    pattern="[0-9]{10}"
+                    placeholder="ex. 0901234567"
+                    class="mt-1 block w-full"
+                    required
+                />
+                <InputError class="mt-2" :message="form.errors.phone" />
             </div>
 
             <div class="mt-4">

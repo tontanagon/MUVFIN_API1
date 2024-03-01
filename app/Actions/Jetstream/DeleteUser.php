@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Actions\Jetstream;
-
+use App\Models\customer;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -35,8 +35,12 @@ class DeleteUser implements DeletesUsers
             $user->deleteProfilePhoto();
             $user->tokens->each->delete();
             $user->delete();
-        });
-    }
+
+            DB::table('customers')
+            ->where('customers.id', $user->id)
+            ->update(['customers.status' => 0]);
+    });
+}
 
     /**
      * Delete the teams and team associations attached to the user.

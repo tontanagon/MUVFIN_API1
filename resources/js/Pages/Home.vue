@@ -19,7 +19,7 @@ const prePageUrl = () => {
 
 const nextPageUrl = () => {
     if(nextPage.value < pageCount){
-        return `/home/${nextPage.value +1}`
+        return `/home/${nextPage.value + 1}`
     }
 
 }
@@ -28,6 +28,7 @@ const itemsPerPage = 8;
 const numFilms = props.countfilm;
 
 const pageCount = Math.ceil(numFilms / itemsPerPage);
+
 const index_num = ref();
 
 
@@ -35,7 +36,6 @@ const index_num = ref();
 let modalShow = ref(false);
 const showModal = (index) => {
     index_num.value = index
-
     modalShow.value = true;
 };
 const closeModal = () => {
@@ -47,7 +47,7 @@ if (props.prenext > 0 ) {
      class_pagination.value = 'flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mb-8'
 }
 
-//import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+
 
 
 </script>
@@ -61,22 +61,23 @@ if (props.prenext > 0 ) {
             </h2>
 
           </div>
-          <div class="m-8" >
-            <a
-            class="text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-            href="/home/1">
-        All
-            </a>
+            <div class="m-8 "  >
+                <a
+                class="text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                href="/home/1">
+                    All
+                </a>
 
-    <a
-        :href="`/home/${i.name}`"
-        type="button"
-        class="text-white bg-gradient-to-r from-purple-500 via-purple-500 to-purple-500 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-purple-800 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-        v-for="i in cate">
-        {{ i.name }}
-    </a>
+                <a
+                    :href="`/home/${i.name}`"
+                    type="button"
+                    class=" text-white bg-gradient-to-r from-purple-500 via-purple-500 to-purple-500 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-purple-800 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2
+                    "
+                    v-for="i in cate">
+                    {{ i.name }}
+                </a>
 
-</div>
+            </div>
 
 
 
@@ -87,16 +88,24 @@ if (props.prenext > 0 ) {
 <div :class="class_pagination">
     <div class="flex flex-1 justify-center">
       <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-        <a :href="prePageUrl()"  class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-          <span> < </span>
+        <a :href="prePageUrl()" v-if="nextPage > 1" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+            <span> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+            </span>
         </a>
             <!-- Here you can dynamically generate pagination links based on your data -->
             <template v-for="pageNumber in pageCount">
                 <a :href="`/home/${pageNumber}`"  class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                 {{ pageNumber }}</a>
             </template>
-        <a :href="nextPageUrl()"  class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-          <span> > </span>
+        <a :href="nextPageUrl()" v-if="nextPage < pageCount" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+
+ </span>
         </a>
       </nav>
     </div>
@@ -104,9 +113,9 @@ if (props.prenext > 0 ) {
 
 
 
-
+  <!-- card -->
     <div class="columns-1 container max-h-full
-    sm:columns-1 sm:container sm:mx-3
+    sm:columns-1 sm:container sm:mx-auto sm:px-2
     md:columns-1  md:container md:mx-auto
     lg:columns-1 lg:container lg:mx-auto lg:w-9/12
     xl:grid grid-cols-2 xl:container xl:mx-auto xl:w-full
@@ -114,31 +123,61 @@ if (props.prenext > 0 ) {
    >
         <!-- bg-stone-50 -->
         <!-- bg-sky-950-->
-        <a  v-for="(movie,index) in films"
+        <a
+         v-for="(movie,index) in films"
             @click="showModal(index)">
                 <!-- card -->
-            <div class="pb-4 m-4 hover:bg-stone-100  border border-gray-400 rounded-lg shadow card m-2">
-                <div class="columns-2 mt-4 sm:pr-16 md:pr-20 xl:pr-2 2xl:pr-2">
+            <div class="columns-2 pb-4 m-4 hover:bg-stone-100  shadow-lg rounded-lg card ">
+                <div class=" mt-4
+                sm:pr-16
+                md:pr-20
+                lg:pr-2
+                xl:pr-2
+                2xl:pr-2
+                ">
 
-                    <img class=" m-6 object-cover h-44 w-auto rounded-lg
-                     sm:h-64 sm:w-auto sm:round-lg
+                    <img class=" m-6 object-cover h-48 w-auto rounded-lg
+                     sm:h-60 sm:w-auto sm:round-lg
                      md:h-68 md:w-auto md:round-lg
                      lg:h-68 lg:w-auto lg:round-lg
                      xl:h-80 xl:w-auto xl:round-lg
                      2xl:h-96 xl:w-auto xl:round-lg
-                       " :src="movie.imgUrl" >
+                     " :src="movie.imgUrl" >
 
-                        <h5 class="mt-6 mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-2xl break-before-column">{{ movie.title }}</h5>
-                        <p class="mb-3 font-normal text-gray-400 dark:text-gray-400 text-xl pb-4"> {{ movie.name }}</p>
-                            <div class="columns-2 text font-normal text-gray-400 ">
-                                <p class="text mb-3 leading-6">Rating</p>
-                                <p class="text mb-3 ">  {{movie.rating}}</p>
-                                <p class="mb-3 leading-6">Length</p>
-                                <p class="mb-3 ">  {{movie.length}} minute</p>
+                    <h5 class="mt-6 mb-2 text-xl font-bold font-sans tracking-tight text-white break-before-column text hover:text-black
+                    sm:text-xl sm:mt-4
+                    md:text-3xl
+                    lg:text-3xl
+                    xl:text-4xl
+                    2xl:text-4xl
+                    ">{{ movie.title }}</h5>
+                    <p class=" text-lg font-medium font-sans text-gray-400 pb-4 text hover:text-blue-950
+                    sm:text-lg sm:pt-4
+                    md:text-lg
+                    lg:text-xl
+                    xl:text-xl
+                    2xl:text-xl
+                    "> {{ movie.name }}</p>
+                        <div class="columns-2 text-sm text font-medium font-sans text-gray-400 text hover:text-blue-950
+                        sm:text-base
+                        md:text-lg
+                        lg:text-lg
+                        xl:text-lg
+                        2xl:text-lg">
+                            <p>Rating</p>
+                            <p class="pl-2 font-normal">  {{movie.rating}}</p>
+                            <p>Length</p>
+                            <p class=" font-normal text-balance ">  {{movie.length}} minute</p>
                             </div>
-                        <div class="h-32 mt-6 font-normal text-gray-400">
-                            Actor
-                            <p class="mt-3 font-normal"> {{movie.actor}} </p>
+                        <div class="font-medium text-sm h-32 mt-4 font-sans text-gray-400 text hover:text-blue-950
+                        sm:text-sm
+                        md:text-base
+                        lg:text-lg
+                        xl:text-lg
+                        2xl:text-lg
+                        ">
+                                Actor
+                                <p class="font-normal mt-1 text text-balance "> {{movie.actor}} </p>
                         </div>
 
                 </div>
@@ -159,7 +198,7 @@ if (props.prenext > 0 ) {
             </div>
             <div class="flex-grow flex flex-col py-8 text  leading-normal ">
                 <h5 class="text mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-2xl">{{ props.films[index_num].title }}</h5>
-                <p class="text mb-3 font-normal text-gray-400 "> {{ props.films[index_num].name }}</p>
+                <p class="text mb-3 font-normal text-gray-400 hover:text-blue-950 "> {{ props.films[index_num].name }}</p>
                 <p class="text mb-3 font-normal text-gray-400 ">Rating : {{ props.films[index_num].rating }}</p>
                 <p class="text mb-3 font-normal text-gray-400  ">Length : {{ props.films[index_num].length }} minute</p>
 
@@ -169,10 +208,11 @@ if (props.prenext > 0 ) {
         </div>
 
 
-        <div class="columns items-centerleading-normal mt-4 text tracking-tight  text-gray-900 dark:text-white text-justify">
+        <div class="columns items-centerleading-normal mt-4 text tracking-tight  text-stone-50 text-justify mb-2 ">
             <p> {{  props.films[index_num].description}}</p>
         </div>
-        <a
+        <button
+        type="button"
         @click="shoppingStore.addToCart(
             1,
             props.films[index_num].title,
@@ -186,7 +226,7 @@ if (props.prenext > 0 ) {
         <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10" >
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
         </svg>
-        </a>
+        </button>
     </div>
     </div>
 
@@ -201,16 +241,24 @@ if (props.prenext > 0 ) {
 <div :class="class_pagination">
     <div class="flex flex-1 justify-center">
       <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-        <a :href="prePageUrl()"  class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-          <span> < </span>
+        <a :href="prePageUrl()" v-if="nextPage > 1" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+            <span> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+            </span>
         </a>
             <!-- Here you can dynamically generate pagination links based on your data -->
             <template v-for="pageNumber in pageCount">
                 <a :href="`/home/${pageNumber}`"  class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                 {{ pageNumber }}</a>
             </template>
-        <a :href="nextPageUrl()"  class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-          <span> > </span>
+        <a :href="nextPageUrl()" v-if="nextPage < pageCount" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+
+ </span>
         </a>
       </nav>
     </div>
@@ -224,7 +272,8 @@ if (props.prenext > 0 ) {
 
 
 .card:hover .text{
-    color: black;
+    color: rgb(73, 73, 73);
+
 
 }
 

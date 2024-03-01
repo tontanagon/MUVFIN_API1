@@ -1,5 +1,5 @@
-<script setup>
-import { ref } from 'vue';
+ <script setup>
+import { ref ,onMounted ,defineProps } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import FormSection from '@/Components/FormSection.vue';
@@ -8,15 +8,22 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-
+import axios from 'axios';
 const props = defineProps({
-    user: Object,
-});
+    user : Object,
+    customer: Object,
+ });
 
-const form = useForm({
+console.log(props.customer)
+const m = {ww:'namw'}
+
+
+
+    const form = useForm({
     _method: 'PUT',
     name: props.user.name,
     email: props.user.email,
+    first_name: m.ww ,
     photo: null,
 });
 
@@ -83,6 +90,7 @@ const clearPhotoFileInput = () => {
 
         <template #description>
             Update your account's profile information and email address.
+
         </template>
 
         <template #form>
@@ -129,7 +137,7 @@ const clearPhotoFileInput = () => {
 
             <!-- Name -->
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="NameAccount" />
                 <TextInput
                     id="name"
                     v-model="form.name"
@@ -171,6 +179,18 @@ const clearPhotoFileInput = () => {
                         A new verification link has been sent to your email address.
                     </div>
                 </div>
+            </div>
+            <!-- First Name -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="fname" value="First Name" />
+                <TextInput
+                    id="fname"
+                    v-model="form.first_name"
+                    type="text"
+                    class="mt-1 block w-full"
+
+                />
+                <InputError :message="form.errors.fname" class="mt-2" />
             </div>
         </template>
 

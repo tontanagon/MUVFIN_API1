@@ -16,7 +16,6 @@ class payment extends Model
         'film_id',
         'total',
         'week'
-
     ];
 
     public function payment_to_customer()

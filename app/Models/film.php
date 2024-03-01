@@ -9,7 +9,10 @@ class film extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'film_id';
+
     protected $fillable = [
+        'film_id',
         'title',
         'category_id',
         'price',

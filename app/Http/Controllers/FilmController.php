@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
 use App\Models\film;
+use App\Models\customer;
 use App\Models\filmtext;
 use App\Models\category;
 use Illuminate\Http\Request;
@@ -15,7 +18,15 @@ class FilmController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request , $page =1)
+
+    public function index(Request $request )
+     {
+        $film = film::all();
+
+        return $film;
+     }
+
+    public function home(Request $request , $page =1)
     {
         $cate = category::all();
         $countfilm = film::count();
@@ -26,16 +37,16 @@ class FilmController extends Controller
             $first = $last - 7;
 
             $films = DB::table('films')
-                ->leftJoin('film_texts','films.film_id','=','film_texts.film_id')
+                ->leftJoin('filmtexts','films.film_id','=','filmtexts.film_id')
                 ->leftJoin('categories','films.category_id','=','categories.category_id')
-                ->select('films.*', 'film_texts.*', 'categories.*')
+                ->select('films.*', 'filmtexts.*', 'categories.*')
                 ->whereBetween('films.film_id', [$first, $last])
                 ->get();
         } else{
             $films = DB::table('films')
-                ->leftJoin('film_texts','films.film_id','=','film_texts.film_id')
+                ->leftJoin('filmtexts','films.film_id','=','filmtexts.film_id')
                 ->leftJoin('categories','films.category_id','=','categories.category_id')
-                ->select('films.*', 'film_texts.*', 'categories.*')
+                ->select('films.*', 'filmtexts.*', 'categories.*')
                 ->where('categories.name','=',$page)
                 ->get();
         }
@@ -48,6 +59,19 @@ class FilmController extends Controller
         ]);
     }
 
+    public function welcome(Request $request)
+    {
+        // Your code to fetch film data based on the request, if needed
+        $films = DB::table('films')
+            ->leftJoin('filmtexts', 'films.film_id', '=', 'filmtexts.film_id')
+            ->leftJoin('categories', 'films.category_id', '=', 'categories.category_id')
+            ->select('films.*', 'filmtexts.*', 'categories.*')
+            ->orderBy('rating' , 'DESC')
+            ->limit(3)
+            ->get();
+
+            return $films ;
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -66,7 +90,20 @@ class FilmController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'film_id' => 'required|integer',
+            'title' => 'required|string|max:100',
+            'category_id' => 'required|integer',
+            'price' => 'required|numeric',
+            'length' => 'required|integer',
+            'rating' => 'required|string|max:15',
+            'actor' => 'required|string|max:255',
+            'imgUrl' => 'required|string|max:255',
+        ]);
+
+        film::create($validated);
+
+        return response()->json(['message' => 'films created successfully'], 201);
     }
 
     /**
@@ -75,9 +112,20 @@ class FilmController extends Controller
      * @param  \App\Models\film  $film
      * @return \Illuminate\Http\Response
      */
-    public function show(film $film)
+    public function show($film_id)
     {
-        //
+        $film = film::find($film_id);
+
+        if(!$film){
+            return response()->json([
+                'message' => 'film not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'film get successfully',
+            'Data' => $film
+        ], 201);
     }
 
     /**
@@ -100,7 +148,27 @@ class FilmController extends Controller
      */
     public function update(Request $request, film $film)
     {
-        //
+        $validated = $request->validate([
+            'film_id' => 'required|integer',
+            'title' => 'required|string|max:100',
+            'category_id' => 'required|integer',
+            'price' => 'required|numeric',
+            'length' => 'required|integer',
+            'rating' => 'required|string|max:15',
+            'actor' => 'required|string|max:255',
+            'imgUrl' => 'required|string|max:255',
+        ]);
+
+        $film = film::find($request->film_id);
+
+        if (!$film) {
+            return response()->json(['message' => 'film not found'], 404);
+        }
+            $film->update($validated);
+
+            return response()->json(['message' => 'film update successfully', 'data' => $film], 200);
+
+
     }
 
     /**
@@ -109,8 +177,15 @@ class FilmController extends Controller
      * @param  \App\Models\film  $film
      * @return \Illuminate\Http\Response
      */
-    public function destroy(film $film)
+    public function destroy($film_id)
     {
-        //
+        $film = Film::find($film_id);
+
+        if($film){
+            $film->delete();
+            return response()->json(['message' => 'film deleted successfully' , 'data' => $film], 200);
+        } else {
+            return response()->json(['message' => 'film not found'], 404);
+        }
     }
 }

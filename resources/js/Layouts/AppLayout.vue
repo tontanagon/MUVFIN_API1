@@ -41,14 +41,14 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('home', { page: 1 })">
+                                <Link :href="route('home')">
                                     <ApplicationMark class="block h-50 w-50" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('home', { page: 1 })" :active="route().current('home', { page: 1 })">
+                                <NavLink :href="route('home')" :active="route().current('home')">
                                     Home
                                 </NavLink>
                                 <NavLink :href="route('cart')" :active="route().current('cart')">
@@ -157,10 +157,6 @@ const logout = () => {
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="flex items-center px-4">
-                            <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 mr-3">
-                                <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
-                            </div>
-
                             <div>
                                 <div class="font-medium text-base text-gray-800">
                                     {{ $page.props.auth.user.name }}
@@ -178,9 +174,12 @@ const logout = () => {
                         </div>
                         <div class="border-t border-gray-200" />
                             <div class="px-3 py-2 text-l text-gray-500">
-                                History
+                                Order
                             </div>
                         <div class="mt-1 space-y-1">
+                            <ResponsiveNavLink :href="route('cart')">
+                                Cart
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('orderhistory')">
                                 Order History
                             </ResponsiveNavLink>

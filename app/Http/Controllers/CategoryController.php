@@ -14,7 +14,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $category = category::all();
+
+        return response()->json([
+            'Data' => $category
+        ], 200);
     }
 
     /**
@@ -35,7 +39,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'category_id' => 'required|integer',
+            'name' => 'required|string|max:20',
+        ]);
+
+        category::create($validated);
+
+        return response()->json(['message' => 'categories created successfully'], 201);
     }
 
     /**
@@ -44,9 +55,20 @@ class CategoryController extends Controller
      * @param  \App\Models\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(category $category)
+    public function show(Request $request,category $category)
     {
-        //
+        $category = category::find($request->category);
+
+        if(!$category){
+            return response()->json([
+                'message' => 'Categoy not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Categoy get successfully',
+            'Data' => $category
+        ], 201);
     }
 
     /**
@@ -69,7 +91,18 @@ class CategoryController extends Controller
      */
     public function update(Request $request, category $category)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:20',
+        ]);
+
+        $category = category::find($request->category_id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+        $category->update($validated);
+
+        return response()->json(['message' => 'Category updated successfully', 'data' => $category], 200);
     }
 
     /**
@@ -78,8 +111,16 @@ class CategoryController extends Controller
      * @param  \App\Models\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(category $category)
+    public function destroy($category_id)
     {
-        //
+        $category = Category::find($category_id);
+
+        if($category){
+            $category->delete();
+            return response()->json(['message' => 'Category deleted successfully', 'data' => $category], 200);
+        } else {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
     }
-}
+
+ }
