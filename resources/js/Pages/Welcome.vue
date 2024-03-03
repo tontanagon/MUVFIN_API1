@@ -130,7 +130,7 @@ const props = defineProps({
 
 
     <div class="
-    max-w-full
+    max-w-none
     max-w-screen-sm
     max-w-screen-md
     max-w-screen-lg
@@ -237,7 +237,7 @@ const props = defineProps({
       </g>
     </svg>
     <div class="mx-auto gradient mt-5
-    max-w-full
+    max-w-none
     max-w-screen-sm
     max-w-screen-md
     max-w-screen-lg
