@@ -8,24 +8,43 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import axios from 'axios';
+import { GetCustomerInfo } from '@/store/cart';
+const customerinfo = GetCustomerInfo();
 const props = defineProps({
     user : Object,
-    customer: Object,
  });
+const customer = customerinfo.infoCustomer
+// const customer = ref(customerinfo.infoCustomer)
+//  onMounted(async () => {
+//     try {
+//         const response = await axios.get('/profile');
+//         const data = response.data;
 
-console.log(props.customer)
-const m = {ww:'namw'}
+
+//         const finditemIndex = customer.value.findIndex(item => item[0].id === data[0].id);
+//         if (finditemIndex > -1) {
+//             customer.value.splice(finditemIndex, 1);
+//         }
+//         return customer.value = data;
+
+
+//     } catch (error) {
+//         console.error('มีปัญหาในการร้องขอ:', error);
+//     }
+// });
 
 
 
-    const form = useForm({
-    _method: 'PUT',
-    name: props.user.name,
-    email: props.user.email,
-    first_name: m.ww ,
-    photo: null,
-});
+const form = useForm({
+            _method: 'PUT',
+            name: props.user.name,
+            email: props.user.email,
+            first_name: customer.first_name ,
+            last_name: customer.last_name ,
+            phone: customer.phone ,
+            photo: null,
+        });
+
 
 const verificationLinkSent = ref(null);
 const photoPreview = ref(null);
@@ -180,6 +199,7 @@ const clearPhotoFileInput = () => {
                     </div>
                 </div>
             </div>
+
             <!-- First Name -->
             <div class="col-span-6 sm:col-span-4">
                 <InputLabel for="fname" value="First Name" />
@@ -191,6 +211,31 @@ const clearPhotoFileInput = () => {
 
                 />
                 <InputError :message="form.errors.fname" class="mt-2" />
+            </div>
+            <!-- Last Name -->
+
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="lname" value="Last Name" />
+                <TextInput
+                    id="lname"
+                    v-model="form.last_name"
+                    type="text"
+                    class="mt-1 block w-full"
+
+                />
+                <InputError :message="form.errors.lname" class="mt-2" />
+            </div>
+            <!-- Last Name -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="phone" value="Phone" />
+                <TextInput
+                    id="phone"
+                    v-model="form.phone"
+                    type="tel"
+                    class="mt-1 block w-full"
+
+                />
+                <InputError :message="form.errors.lname" class="mt-2" />
             </div>
         </template>
 

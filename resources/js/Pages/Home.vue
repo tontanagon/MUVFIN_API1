@@ -1,14 +1,33 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref ,defineProps, computed} from 'vue'
-import { useShoppingStore } from '@/store/cart';
+import { ref ,onMounted ,defineProps } from 'vue';
+import { useShoppingStore ,GetCustomerInfo } from '@/store/cart';
 const shoppingStore = useShoppingStore()
+const customerinfo = GetCustomerInfo();
 
 const props = defineProps(['films', 'cate','countfilm','prenext']);
 const nextPage = ref(parseInt(props.prenext))
-console.log(nextPage)
 
+
+const customer = ref(customerinfo.infoCustomer);
+
+onMounted(async () => {
+    try {
+        const response = await axios.get('/profile');
+        const data = response.data;
+
+        const finditemIndex = customer.value.findIndex(item => item[0].id === data[0].id);
+        if (finditemIndex > -1) {
+            customer.value.splice(finditemIndex, 1);
+        }
+        Object.assign(customer.value, data)
+
+
+    } catch (error) {
+        console.error('มีปัญหาในการร้องขอ:', error);
+    }
+});
 
 const prePageUrl = () => {
     if(nextPage.value > 1){
@@ -219,7 +238,8 @@ if (props.prenext > 0 ) {
             props.films[index_num].name,
             props.films[index_num].price,
             props.films[index_num].imgUrl,
-            props.films[index_num].length
+            props.films[index_num].length,
+            props.films[index_num].film_id,
         )"
         class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black button rounded-lg bg-stone-50  focus:ring-4 focus:outline-none focus:ring-blue-300  ">
         Add to cart

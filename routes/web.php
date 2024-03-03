@@ -42,9 +42,11 @@ Route::middleware([
 ])->group(function () {
     Route::get('/home/{page?}', [FilmController::class, 'home'])->name('home');
     Route::get('/profile', [CustomerController::class, 'profile']);
-    Route::get('/cart', function () {
-        return Inertia::render('Cart');
-    })->name('cart');
-    Route::get('/orderhistory', [PaymentController::class, 'index'])->name('orderhistory');
-    Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+    Route::get('/cart', [PaymentController::class, 'cart'])->name('cart');
+    Route::get('/orderhistory', [PaymentController::class, 'orderhistory'])->name('orderhistory');
+    Route::post('/payment', [PaymentController::class, 'checkout']);
+    // Route::post('/checkout', 'PaymentController@checkout')->name('checkout')
+    // Route::post('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
+
 });
+

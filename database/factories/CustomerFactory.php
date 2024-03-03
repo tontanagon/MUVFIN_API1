@@ -14,14 +14,18 @@ class CustomerFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
 
         return [
             'first_name' =>$this-> faker->firstName,
             'last_name' =>$this-> faker->lastName,
-            'email' =>$this-> faker->unique()->safeEmail,
+            'email' => function (array $attributes) {
+                // ให้ CustomerFactory ใช้ email จาก UserFactory
+                return $attributes['email'] ?? $this->faker->unique()->safeEmail;
+            },
             'phone' =>$this-> faker->phoneNumber,
+            'status'=>1,
         ];
     }
 }

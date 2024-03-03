@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref ,onMounted ,defineProps } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
@@ -8,9 +8,12 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
+
 defineProps({
     title: String,
 });
+
+
 
 const showingNavigationDropdown = ref(false);
 
@@ -109,7 +112,12 @@ const logout = () => {
                                         <!-- Authentication -->
                                         <form @submit.prevent="logout">
                                             <DropdownLink as="button">
-                                                Log Out
+                                                <div class="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                                            </svg>
+                                                    <p class="ml-2">Log Out</p>
+                                                </div>
                                             </DropdownLink>
                                         </form>
                                     </template>
@@ -173,23 +181,29 @@ const logout = () => {
                             </ResponsiveNavLink>
                         </div>
                         <div class="border-t border-gray-200" />
-                            <div class="px-3 py-2 text-l text-gray-500">
-                                Order
-                            </div>
+
                         <div class="mt-1 space-y-1">
-                            <ResponsiveNavLink :href="route('cart')">
+                            <ResponsiveNavLink :href="route('cart')" :active="route().current('cart')">
                                 Cart
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('orderhistory')">
+                        </div>
+                        <div class="mt-1 space-y-1">
+                            <ResponsiveNavLink :href="route('orderhistory')" :active="route().current('orderhistory')">
                                 Order History
                             </ResponsiveNavLink>
+                        </div>
 
                         <div class="border-t border-gray-200" />
 
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logout">
                                 <ResponsiveNavLink as="button">
-                                    Log Out
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                                </svg>
+                                        <p class="ml-2">Log Out</p>
+                                    </div>
                                 </ResponsiveNavLink>
                             </form>
 
@@ -208,7 +222,7 @@ const logout = () => {
                             </template>
                             </div>
 
-                    </div>
+
                 </div>
             </nav>
 

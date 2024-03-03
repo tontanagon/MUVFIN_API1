@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\film;
 use App\Models\category;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 
 
@@ -24,30 +25,57 @@ class PaymentController extends Controller
         return response()->json(['message' => $payment ], 201);
 
     }
+
+
     public function orderhistory(Request $request , payment $payment)
     {
-        // $films = DB::table('films')
-        // ->select('imgUrl','title','price','length')
-        // ->get('imgUrl','title','price','length');
-        // ->get();
+        $user = $request->user();
+        $PaymentNotEx = DB::table('payments')
+        ->leftJoin('films','films.film_id','=','payments.film_id')
+        ->leftJoin('categories','categories.category_id','=','films.category_id')
+        ->where('payments.id',$user->id)
+        ->where(DB::raw('DATE(payments.created_at) + 7*payments.week - DATE(NOW())') ,'>','0')
+        ->select('films.*', 'payments.*', 'categories.*' ,'payments.created_at', DB::raw('DATE(payments.created_at) + 7*payments.week - DATE(NOW()) as time'))
+        ->get();
+
+        $PaymentEx = DB::table('payments')
+        ->leftJoin('films','films.film_id','=','payments.film_id')
+        ->leftJoin('categories','categories.category_id','=','films.category_id')
+        ->where('payments.id',$user->id)
+        ->where(DB::raw('DATE(payments.created_at) + 7*payments.week - DATE(NOW())') ,'<=','0')
+        ->select('films.*', 'payments.*', 'categories.name' ,'payments.created_at', DB::raw('DATE(payments.created_at) + 7*payments.week - DATE(NOW()) as time'))
+        ->get();
 
 
-        // return Inertia::render('Orderhistory',[
-        //     'films' => $films,
+        return Inertia::render('Orderhistory',[
+            'PaymentNotEx' => $PaymentNotEx,
+            'PaymentEx' => $PaymentEx
 
-        // ]);
-
-        $payment = payments::all();
-
-        return $payment;
+        ]);
     }
+
+  public function cart(Request $request )
+    {
+        $user = $request->user();
+        $containsFilm = DB::table('payments')
+                        ->where('id', $user->id)
+                        ->where(DB::raw('DATE(payments.created_at) + 7*payments.week - DATE(NOW())') ,'>','0')
+                        ->select('payments.film_id')
+                        ->get();
+
+        return Inertia::render('Cart', [
+            'containsFilm' => $containsFilm,
+            'user' => $user
+        ]);
+    }
+
     public function payment(Request $request , payment $payment)
     {
-        $payment = payments::all();
+        $payment = payment::all();
         return $payment;
     }
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resources.cc
      *
      * @return \Illuminate\Http\Response
      */
@@ -93,15 +121,18 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'payment_id' => 'required|string|max:6',
-            'customer_id' => 'required|integer',
+            'id' => 'required|integer',
             'film_id' => 'required|integer',
             'total' => 'required|numeric',
             'week' => 'required|integer',
         ]);
 
-        payments::create($validated);
+        payment::create($validated);
 
         return response()->json(['message' => 'payments created successfully'], 201);
+
+
+
     }
 
     /**
@@ -148,7 +179,7 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'payment_id' => 'required|string|max:6',
-            'customer_id' => 'required|integer',
+            'id' => 'required|integer',
             'film_id' => 'required|integer',
             'total' => 'required|numeric',
             'week' => 'required|integer',
@@ -182,4 +213,22 @@ class PaymentController extends Controller
         }
 
     }
+
+    public function checkout(Request $request)
+    {
+        $validatedData = $request->validate([
+            'payment_id' => 'required|string|max:6',
+            'id' => 'required|integer',
+            'film_id' => 'required|integer',
+            'total' => 'required|numeric',
+            'week' => 'required|integer',
+        ]);
+
+        $payment = Payment::create($validatedData);
+
+        return response()->json($payment, 201);
+    }
+
+
 }
+

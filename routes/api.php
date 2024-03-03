@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 
 
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -47,7 +48,6 @@ Route::post('/login', [UserController::class, 'store']);
         Route::resource('payment',PaymentController::class);
         Route::resource('customer',CustomerController::class);
         Route::delete('/logout/{user}', [UserController::class, 'destroy']);
-
 
 
 

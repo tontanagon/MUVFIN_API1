@@ -2,8 +2,8 @@ import { find } from 'lodash'
 import { defineStore } from 'pinia'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
-import { computed, ref } from 'vue'
-
+import { computed, ref ,onMounted ,defineProps } from 'vue'
+import axios from 'axios';
 
 
 
@@ -40,7 +40,7 @@ export const useShoppingStore = defineStore('shopping', () => {
         sessionStorage.setItem('cartItems', JSON.stringify(cartItems.value));
     }
 
-    const addToCart = (quantity, title, category, price, imgUrl, length) => {
+    const addToCart = (quantity, title, category, price, imgUrl, length ,film_id) => {
         //หา index ของ titlle ใน cartItems ถ้าไม่เจอ = -1
         const finditem = cartItems.value.findIndex(film => film.title === title);
         const success = (text) => {
@@ -53,37 +53,37 @@ export const useShoppingStore = defineStore('shopping', () => {
             })
         }
 
-        console.log(finditem);
+
 
         if (finditem === -1) {
             cartItems.value.push({
                 // user_id : user_id.value,
                 quantity: quantity,
+                film_id:film_id,
                 title: title,
                 category: category,
                 price: price,
                 imgUrl: imgUrl,
                 length: length
             });
-            success("เพิ่มหนังลงตะกร้าเรียบร้อยเเล้ว")
+            success("Added Movie Sucessfull")
         }
         else {
             cartItems.value[finditem].quantity += 1;
-            success("เพิ่มระยะเวลาเรียบร้อยเเล้ว")
+            success("Added Week Sucessfull")
         }
         saveToSessionStorage()
-        console.log(cartItems.value);
+
 
     }
 
 
 
-    return { addToCart, increaseQuantity, decreaseQuantity, removeItem, cartItems };
+    return { addToCart, increaseQuantity, decreaseQuantity, removeItem, cartItems ,saveToSessionStorage};
 })
 
 
 export const GetCustomerInfo = defineStore('profile', () => {
     const infoCustomer = ref(JSON.parse(sessionStorage.getItem('infoCustomer')) || []);
-
     return{infoCustomer};
 })
